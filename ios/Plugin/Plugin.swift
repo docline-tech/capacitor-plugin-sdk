@@ -28,13 +28,15 @@ public class DoclineSDK: CAPPlugin {
         }
     }
     
-    // MARK: Private Logic
+    // MARK: Error Private Logic
     
     private func sendError(_ error: Docline.ResponseError) {
-        let messageAsDictionary = errorToDictionary(error: error)
-        call?.reject(error.localizedDescription, nil, error, messageAsDictionary)
+        let data = errorToDictionary(error: error)
+        notifyListeners(ErrorKeys.error.rawValue, data: data)
+        
+        call?.resolve()
         removeAllListeners(call)
-        call = nil
+        call = nil        
     }
     
     private func errorToDictionary(error: Docline.ResponseError) -> [String: Any] {
@@ -50,13 +52,15 @@ public class DoclineSDK: CAPPlugin {
             errorType = .connectionError
         case .customError(let message):
             errorType = .customError
-            dictionary["message"] = message
+            dictionary[ErrorKeys.message.rawValue] = message
         default: break
         }
-        dictionary["type"] = errorType.rawValue
+        dictionary[ErrorKeys.type.rawValue] = errorType.rawValue
         
         return dictionary
     }
+
+    // MARK: Event Private Logic
     
     private func sendEvent(_ dictionary: [EventKeys: Any]) {
         guard let eventName = dictionary[.eventId] as? String else {
@@ -90,6 +94,12 @@ public class DoclineSDK: CAPPlugin {
              connectionError,
              customError,
              defaultError
+    }
+
+    enum ErrorKeys: String {
+        case error,
+             type,
+             message
     }
     
     enum EventKeys: String {

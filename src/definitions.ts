@@ -18,6 +18,8 @@ export enum ErrorType {
 }
 
 export enum EventId {
+  // Error Event
+  error = "error",
   // General Events
   consultationJoinSuccess = "consultationJoinSuccess", 
   consultationTerminated = "consultationTerminated", 
