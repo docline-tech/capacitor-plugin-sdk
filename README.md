@@ -108,7 +108,7 @@ This method works async. It allows us to connect to the Docline video consultati
     DoclineSDK.join({
       code: this.code,
       path: apiURL
-    }).catch(this.handleError);
+    })
 ```
 If no error occurrs, we will connect to the video consultation. In both cases events will be emitted, if we want to be notified we will have to subscribe to the event.
 
@@ -125,11 +125,12 @@ code: string = "";
 onClick() {  
     let eventId = EventId.consultationJoinSuccess;    
     DoclineSDK.addEventListener(eventId, this.consultationJoinSuccess);
-    let apiURL = "https://api-url";
+    
+    let apiURL = "https://api-url";    
     DoclineSDK.join({
       code: this.code,
       path: apiURL
-    }).catch(this.handleError);
+    })
 }
 
 consultationJoinSuccess(data) {
@@ -157,15 +158,19 @@ enum ErrorType {
 
 #### Example usage
 ```javascript
-import { ErrorType } from 'capacitor-plugin-docline-sdk';
-
+import { Plugins } from '@capacitor/core';
+const { DoclineSDK } = Plugins;
+import { EventId, ErrorType } from 'capacitor-plugin-docline-sdk';
 ...
 
-join() {    
+join() {
+    let errorEvent = EventId.error;
+    DoclineSDK.addEventListener(errorEvent, this.handleError);
+    
     DoclineSDK.join({
       code: this.code,
       path: apiURL
-    }).catch(this.handleError);
+    })    
 }
 
 handleError(error) {    
