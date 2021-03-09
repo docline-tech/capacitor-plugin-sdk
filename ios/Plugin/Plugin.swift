@@ -13,10 +13,13 @@ public class DoclineSDK: CAPPlugin {
     @objc func join(_ call: CAPPluginCall) {
         self.call = call
         
-        guard let roomCode = call.getString("code"),
-              let serverURL = call.getString("path") else {
-            
-            sendError(.unauthorizedError)
+        guard let serverURL = call.getString("path") else {            
+            sendError(.connectionError)
+            return
+        }
+
+        guard let roomCode = call.getString("code") else {            
+            sendError(.emptyCodeError)
             return
         }
     
