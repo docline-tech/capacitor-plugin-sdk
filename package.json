@@ -1,6 +1,6 @@
 {
   "name": "capacitor-plugin-docline-sdk",
-  "version": "0.0.4-beta.8",
+  "version": "0.0.4-beta.10",
   "description": "Capacitor Docline Video SDK Plugin",
   "main": "dist/plugin.js",
   "module": "dist/esm/index.js",
@@ -18,7 +18,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@capacitor/android": "^2.4.6",
-    "@capacitor/core": "^2.4.6",
+    "@capacitor/core": "^2.4.7",
     "@capacitor/ios": "^2.4.6",
     "@ionic/prettier-config": "^1.0.0",
     "@ionic/swiftlint-config": "^1.0.0",
@@ -31,7 +31,7 @@
     "typescript": "~3.8.3"
   },
   "peerDependencies": {
-    "@capacitor/core": "^2.4.6"
+    "@capacitor/core": "^2.4.7"
   },
   "files": [
     "dist/",
@@ -61,5 +61,7 @@
   },
   "bugs": {
     "url": "https://gitlab.com/dev-docline/capacitor-plugin-docline-sdk.git/issues"
+  },
+  "dependencies": {
   }
 }
