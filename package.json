@@ -61,7 +61,5 @@
   },
   "bugs": {
     "url": "https://gitlab.com/dev-docline/capacitor-plugin-docline-sdk.git/issues"
-  },
-  "dependencies": {
   }
 }

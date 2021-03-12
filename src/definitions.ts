@@ -1,3 +1,5 @@
+import type { PluginListenerHandle } from '@capacitor/core';
+
 declare global {
   interface PluginRegistry {
     DoclineSDK: DoclineSDKPlugin;
@@ -6,8 +8,33 @@ declare global {
 
 export interface DoclineSDKPlugin {
   join(options: { code: string, path: string }): Promise<void>;
+
+  // Error Add Listener
+  
+  addListener(
+    eventName: EventId.error,
+    listenerFunc: (error: ErrorData) => void,
+  ): PluginListenerHandle;
+
+  // Events Add Listener
+
+  addListener(
+    eventName: EventId,
+    listenerFunc: (data: EventData) => void,
+  ): PluginListenerHandle;
 }
 
+export interface ErrorData {
+  type: ErrorType;
+  message?: string;
+}
+
+export interface EventData {
+  eventId: EventId;
+  screenId?: ScreenId;
+  cameraSource?: CameraSource,
+  isEnabled?: boolean
+}
 
 export enum ErrorType { 
   unauthorizedError = "unauthorizedError", 

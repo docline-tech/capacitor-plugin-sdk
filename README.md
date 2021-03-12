@@ -182,7 +182,7 @@ code: string = "";
 
 onClick() {  
     let eventId = EventId.consultationJoinSuccess;    
-    DoclineSDK.addEventListener(eventId, this.consultationJoinSuccess);
+    DoclineSDK.addListener(eventId, this.consultationJoinSuccess);
     
     let apiURL = "https://api-url";    
     DoclineSDK.join({
@@ -223,7 +223,7 @@ import { EventId, ErrorType } from 'capacitor-plugin-docline-sdk';
 
 join() {
     let errorEvent = EventId.error;
-    DoclineSDK.addEventListener(errorEvent, this.handleError);
+    DoclineSDK.addListener(errorEvent, this.handleError);
     
     DoclineSDK.join({
       code: this.code,
@@ -346,7 +346,7 @@ enum ParticipantType {
 }
 ```
 
-### addEventListener()
+### addListener()
 Sets a listener for the indicated event.
 #### Parameters
 - { String } [eventId](#event-id) - The event id
@@ -362,19 +362,19 @@ import { EventId, ErrorType } from 'capacitor-plugin-docline-sdk';
 
 configureListener() {
     let eventId = EventId.consultationJoinSuccess;
-    DoclineSDK.addEventListener(eventId, this.consultationJoinSuccess);
+    DoclineSDK.addListener(eventId, this.consultationJoinSuccess);
 
     let eventId2 = EventId.showScreenView;
-    DoclineSDK.addEventListener(eventId2, this.showScreenView);
+    DoclineSDK.addListener(eventId2, this.showScreenView);
 
     let eventId3 = EventId.updatedCameraSource;
-    DoclineSDK.addEventListener(eventId3, this.updatedCameraSource);
+    DoclineSDK.addListener(eventId3, this.updatedCameraSource);
 
     let eventId4 = EventId.updatedCameraStatus;
-    DoclineSDK.addEventListener(eventId4, this.updatedCameraStatus);
+    DoclineSDK.addListener(eventId4, this.updatedCameraStatus);
 
     let eventId5 = EventId.participantConnected;
-    DoclineSDK.addEventListener(eventId5, this.participantConnected);
+    DoclineSDK.addListener(eventId5, this.participantConnected);
 }
 
 // Listeners

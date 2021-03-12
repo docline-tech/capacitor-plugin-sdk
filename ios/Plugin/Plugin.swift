@@ -131,8 +131,7 @@ extension DoclineSDK: DoclineDelegate {
         }
         
         sendGeneralEvent(.consultationJoinSuccess)
-        call?.resolve()
-        removeAllListeners(call)
+        call?.resolve()        
         call = nil
     }
     
@@ -141,7 +140,8 @@ extension DoclineSDK: DoclineDelegate {
             self?.bridge.viewController.dismiss(animated: true, completion: nil)
         }
         
-        sendGeneralEvent(.consultationTerminated)                
+        sendGeneralEvent(.consultationTerminated)
+        removeAllListeners(call)                
     }
     
     public func show(_ screenView: DoclineVideoSDK.Docline.ScreenView) {
