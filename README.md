@@ -128,13 +128,15 @@ public class MainActivity extends BridgeActivity {
 
 You need to add this lines to use it.
 ```javascript
+import { DoclineSDKPlugin } from 'capacitor-plugin-docline-sdk';
 import { Plugins } from '@capacitor/core';
 const { DoclineSDK } = Plugins;
+const docline: DoclineSDKPlugin = DoclineSDK as DoclineSDKPlugin;
 ```
 
 You need to add this line to use the interfaces and enums defined in the plugin:
 ```javascript
-import { EventId, ErrorType, ... } from 'capacitor-plugin-docline-sdk';
+import { DoclineSDKPlugin, EventId, ErrorType, ... } from 'capacitor-plugin-docline-sdk';
 ```
 
 ## Core Module
@@ -148,50 +150,50 @@ This method works async. It allows us to connect to the Docline video consultati
 
 #### Parameters
 - { String } code - The video consultation code
+- { String } path - The API url
 
 #### Example usage
 
 ```javascript
 /**
- * Set Listener
+ * Join
  * @param {String} code - The code param is the video consultation code
  * @param {String} path - The path param is the api url
- * @param {Fuction} handleError - The error handler
  * 
  */	
-    let code = document.getElementById("code").value;
+    let code = "videoConsultationCode";
     let apiURL = "https://api-url";
     
-    DoclineSDK.join({
+    docline.join({
       code: this.code,
       path: apiURL
-    })
+    });
 ```
 If no error occurrs, we will connect to the video consultation. In both cases events will be emitted, if we want to be notified we will have to subscribe to the event.
 
 #### Example usage
 ```javascript
+import { DoclineSDKPlugin, EventData, EventId } from 'capacitor-plugin-docline-sdk';
 import { Plugins } from '@capacitor/core';
 const { DoclineSDK } = Plugins;
-import { EventId } from 'capacitor-plugin-docline-sdk';
+const docline: DoclineSDKPlugin = DoclineSDK as DoclineSDKPlugin;
 
 ...
 
 code: string = "";
 
 onClick() {  
-    let eventId = EventId.consultationJoinSuccess;    
-    DoclineSDK.addListener(eventId, this.consultationJoinSuccess);
+    docline.addListener(EventId.consultationJoinSuccess, this.consultationJoinSuccess);
     
     let apiURL = "https://api-url";    
-    DoclineSDK.join({
+    docline.join({
       code: this.code,
       path: apiURL
     })
 }
 
-consultationJoinSuccess(data) {
-    console.log(`consultationJoinSuccess: ${JSON.stringify(data)}`);
+consultationJoinSuccess(event: EventData) {
+    console.log(`consultationJoinSuccess: ${JSON.stringify(event)}`);
 }
 ```
 
@@ -227,7 +229,7 @@ interface ErrorData {
 }
 ```
 
-### setHandleError()
+### addListener()
 Sets a listener to handle errors.
 #### Parameters
 - { EventId.error } eventName - The event name
@@ -235,13 +237,14 @@ Sets a listener to handle errors.
 
 #### Example usage
 ```javascript
+import { DoclineSDKPlugin, ErrorData, ErrorType } from 'capacitor-plugin-docline-sdk';
 import { Plugins } from '@capacitor/core';
 const { DoclineSDK } = Plugins;
-import { EventId, ErrorType, ErrorData } from 'capacitor-plugin-docline-sdk';
+const docline: DoclineSDKPlugin = DoclineSDK as DoclineSDKPlugin;
 ...
 
 join() {
-    DoclineSDK.addListener(EventId.error, this.handleError);
+    docline.addListener(EventId.error, this.handleError);
     
     DoclineSDK.join({
       code: this.code,
@@ -297,6 +300,8 @@ The events have been grouped into five groups:
  * General Event Id
  */
 enum EventId {
+  // Error Event
+  error = "error",
   // General Events
   consultationJoinSuccess = "consultationJoinSuccess", 
   consultationTerminated = "consultationTerminated", 
@@ -390,18 +395,19 @@ Sets a listener for the indicated event.
 
 #### Example usage
 ```javascript
+import { DoclineSDKPlugin, EventData, EventId } from 'capacitor-plugin-docline-sdk';
 import { Plugins } from '@capacitor/core';
 const { DoclineSDK } = Plugins;
-import { EventId, EventData } from 'capacitor-plugin-docline-sdk';
+const docline: DoclineSDKPlugin = DoclineSDK as DoclineSDKPlugin;
 
 ...
 
 configureListener() {
-    DoclineSDK.addListener(EventId.consultationJoinSuccess, this.consultationJoinSuccess);
-    DoclineSDK.addListener(EventId.showScreenView, this.showScreenView);
-    DoclineSDK.addListener(EventId.updatedCameraSource, this.updatedCameraSource);
-    DoclineSDK.addListener(EventId.updatedCameraStatus, this.updatedCameraStatus);
-    DoclineSDK.addListener(EventId.participantConnected, this.participantConnected);
+    docline.addListener(EventId.consultationJoinSuccess, this.consultationJoinSuccess);
+    docline.addListener(EventId.showScreenView, this.showScreenView);
+    docline.addListener(EventId.updatedCameraSource, this.updatedCameraSource);
+    docline.addListener(EventId.updatedCameraStatus, this.updatedCameraStatus);
+    docline.addListener(EventId.participantConnected, this.participantConnected);
 }
 
 // Listeners
@@ -423,7 +429,7 @@ updatedCameraStatus(event: EventData) {
 }
 
 participantConnected(event: EventData) {
-    console.log(`{eventId: ${event.eventId}, type: ${event.type}}`);
+    console.log(`{eventId: ${event.eventId}, type: ${event.participantType}}`);
 }
 ```
 
