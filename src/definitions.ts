@@ -1,6 +1,6 @@
 import type { PluginListenerHandle } from '@capacitor/core';
 
-declare global {
+declare module '@capacitor/core' {
   interface PluginRegistry {
     DoclineSDK: DoclineSDKPlugin;
   }
