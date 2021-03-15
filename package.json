@@ -1,6 +1,6 @@
 {
   "name": "capacitor-plugin-docline-sdk",
-  "version": "0.0.4-beta.10",
+  "version": "0.0.4-beta.11",
   "description": "Capacitor Docline Video SDK Plugin",
   "main": "dist/plugin.js",
   "module": "dist/esm/index.js",
