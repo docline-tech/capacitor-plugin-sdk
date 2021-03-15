@@ -25,15 +25,23 @@ export interface DoclineSDKPlugin {
 }
 
 export interface ErrorData {
-  type: ErrorType;
+  // The error type
+  type: ErrorType; 
+  // The customError message
   message?: string;
 }
 
 export interface EventData {
+  // The event id 
   eventId: EventId;
-  screenId?: ScreenId;
-  cameraSource?: CameraSource,
-  isEnabled?: boolean
+  // The screen id where the event occurred
+  screenId?: ScreenId; 
+  // The source of the selected camera
+  cameraSource?: CameraSource;
+  // Indicates whether the microphone/camera has been enabled or disabled
+  isEnabled?: boolean;
+  // The participant type, can be camera or screen
+  participantType?: ParticipantType;
 }
 
 export enum ErrorType { 

@@ -124,7 +124,6 @@ public class MainActivity extends BridgeActivity {
 }
 ```
 
-
 # Usage
 
 You need to add this lines to use it.
@@ -214,16 +213,35 @@ enum ErrorType {
 }
 ```
 
+### Error Data
+#### Definition
+```javascript
+/**
+ * Error Data
+ */
+interface ErrorData {
+  // The error type
+  type: ErrorType; 
+  // The customError message
+  message?: string;
+}
+```
+
+### setHandleError()
+Sets a listener to handle errors.
+#### Parameters
+- { EventId.error } eventName - The event name
+- { (error: ErrorData) => void } listenerFunc - The event error listener
+
 #### Example usage
 ```javascript
 import { Plugins } from '@capacitor/core';
 const { DoclineSDK } = Plugins;
-import { EventId, ErrorType } from 'capacitor-plugin-docline-sdk';
+import { EventId, ErrorType, ErrorData } from 'capacitor-plugin-docline-sdk';
 ...
 
 join() {
-    let errorEvent = EventId.error;
-    DoclineSDK.addListener(errorEvent, this.handleError);
+    DoclineSDK.addListener(EventId.error, this.handleError);
     
     DoclineSDK.join({
       code: this.code,
@@ -231,31 +249,30 @@ join() {
     })    
 }
 
-handleError(error) {    
-    console.log(`error: ${JSON.stringify(error)}`);
+handleError(error: ErrorData) {
     switch (error.type) {
         case ErrorType.unauthorizedError:
-            console.log("unauthorizedError");
-            alert("unauthorizedError");
-            break;
+        console.log("unauthorizedError");
+        alert("unauthorizedError");
+        break;
         case ErrorType.emptyCodeError:
-            console.log("emptyCodeError");
-            alert("emptyCodeError");
-            break;
+        console.log("emptyCodeError");
+        alert("emptyCodeError");
+        break;
         case ErrorType.connectionError:
-            console.log("connectionError");
-            alert("connectionError");
-            break;
+        console.log("connectionError");
+        alert("connectionError");
+        break;
         case ErrorType.customError:
-            console.log(`customError(${error.message})`);
-            alert("customError");
-            break;
+        console.log(`customError(${error.message})`);
+        alert("customError");
+        break;
         case ErrorType.defaultError:
-            console.log("defaultError");
-            alert("defaultError");
-            break;
+        console.log("defaultError");
+        alert("defaultError");
+        break;
         default: 
-            break;
+        break;
     }    
 }
 ```
@@ -272,7 +289,7 @@ The events have been grouped into five groups:
   * [Chat Events.](#chat-events)
 
 
-### __Event Consts__
+### __Event Models__
 #### Event Id
 ##### Definition
 ```javascript
@@ -306,6 +323,25 @@ enum EventId {
   // Chat Events
   messageSent = "messageSent", 
   messageReceived = "messageReceived"
+}
+```
+#### Event Data
+##### Definition
+```javascript
+/**
+ * Event Data
+ */
+interface EventData {
+  // The event id 
+  eventId: EventId;
+  // The screen id where the event occurred
+  screenId?: ScreenId; 
+  // The source of the selected camera
+  cameraSource?: CameraSource;
+  // Indicates whether the microphone/camera has been enabled or disabled
+  isEnabled?: boolean;
+  // The participant type, can be camera or screen
+  participantType?: ParticipantType;
 }
 ```
 
@@ -349,53 +385,44 @@ enum ParticipantType {
 ### addListener()
 Sets a listener for the indicated event.
 #### Parameters
-- { String } [eventId](#event-id) - The event id
-- { (data: { eventId: string, screenId: string?, cameraSource: string?, isEnabled: Boolean? }) => void } listener - The event listener
+- { [EventId](#event-id) } eventName - The event name
+- { (event: [EventData](#event-data)) => void } listenerFunc - The event listener
 
 #### Example usage
 ```javascript
 import { Plugins } from '@capacitor/core';
 const { DoclineSDK } = Plugins;
-import { EventId, ErrorType } from 'capacitor-plugin-docline-sdk';
+import { EventId, EventData } from 'capacitor-plugin-docline-sdk';
 
 ...
 
 configureListener() {
-    let eventId = EventId.consultationJoinSuccess;
-    DoclineSDK.addListener(eventId, this.consultationJoinSuccess);
-
-    let eventId2 = EventId.showScreenView;
-    DoclineSDK.addListener(eventId2, this.showScreenView);
-
-    let eventId3 = EventId.updatedCameraSource;
-    DoclineSDK.addListener(eventId3, this.updatedCameraSource);
-
-    let eventId4 = EventId.updatedCameraStatus;
-    DoclineSDK.addListener(eventId4, this.updatedCameraStatus);
-
-    let eventId5 = EventId.participantConnected;
-    DoclineSDK.addListener(eventId5, this.participantConnected);
+    DoclineSDK.addListener(EventId.consultationJoinSuccess, this.consultationJoinSuccess);
+    DoclineSDK.addListener(EventId.showScreenView, this.showScreenView);
+    DoclineSDK.addListener(EventId.updatedCameraSource, this.updatedCameraSource);
+    DoclineSDK.addListener(EventId.updatedCameraStatus, this.updatedCameraStatus);
+    DoclineSDK.addListener(EventId.participantConnected, this.participantConnected);
 }
 
 // Listeners
 
-consultationJoinSuccess(event) {
+consultationJoinSuccess(event: EventData) {
     console.log(`{eventId: ${event.eventId}}`);
 }
 
-showScreenView(event) {
+showScreenView(event: EventData) {
     console.log(`{eventId: ${event.eventId}, screenId: ${event.screenId}}`);
 }
 
-updatedCameraSource(event) {
+updatedCameraSource(event: EventData) {
     console.log(`{eventId: ${event.eventId}, cameraSource: ${event.cameraSource}}`);
 }
 
-updatedCameraStatus(event) {
+updatedCameraStatus(event: EventData) {
     console.log(`{eventId: ${event.eventId}, isEnabled: ${event.isEnabled}}`);
 }
 
-participantConnected(event) {
+participantConnected(event: EventData) {
     console.log(`{eventId: ${event.eventId}, type: ${event.type}}`);
 }
 ```
@@ -405,49 +432,49 @@ participantConnected(event) {
 ### consultationJoinSuccess
 Sent when the [`join()`](#join) method completes execution without errors.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### consultationTerminated
 Sent when the query has finished, this will release the native component.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### consultationJoined
 Sent upon entering the waiting room.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 ### showScreenView
 Sent when a screen loads and indicates the screen is loaded.
 #### Parameters
-- { eventId: String, screenId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
-    - { String } [screenId](#screen-id) - The screen id where the event occurred
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [ScreenId](#screen-id) } screenId - The screen id where the event occurred
 
 ### updatedCameraSource
 Sent when the source of the camera (front or back) is modified and indicates the screen that generated the event.
 #### Parameters
-- { eventId: String, screenId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
-    - { String } [screenId](#screen-id) - The screen id where the event occurred
-    - { String } [cameraSource](#camera-source) - The source of the selected camera
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [ScreenId](#screen-id) } screenId - The screen id where the event occurred
+    - { [CameraSource](#camera-source) } cameraSource - The source of the selected camera
 
 ### updatedCameraStatus
 Sent when the status of the camera is modified (enabled or disabled) and indicates the screen that generated the event.
 #### Parameters
-- { eventId: String, screenId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
-    - { String } [screenId](#screen-id) - The screen id where the event occurred
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [ScreenId](#screen-id) } screenId - The screen id where the event occurred
     - { Boolean } isEnabled - Indicates whether the camera has been enabled or disabled
 
 ### updatedMicrophone
 Sent when the status of the microphone is modified (enabled or disabled) and indicates the screen that generated the event.
 #### Parameters
-- { eventId: String, screenId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
-    - { String } [screenId](#screen-id) - The screen id where the event occurred
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [ScreenId](#screen-id) } screenId - The screen id where the event occurred
     - { Boolean } isEnabled - Indicates whether the microphone has been enabled or disabled
 
 &nbsp;
@@ -458,26 +485,26 @@ Sent when the status of the microphone is modified (enabled or disabled) and ind
 Sent when the video consultation recording begins.
 The SDK will automatically ask for user consent and nothing will be recorded until accepted. If the user doesn´t agree, they can exit.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### screenRecordingFinished
 Sent when the video consultation recording is finished.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### screenRecordingApproved
 Sent when the user accepts the consent of the recording.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### screenRecordingDenied
 Sent when the user does not accept the consent of the recording.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 &nbsp;
 
@@ -486,34 +513,34 @@ Sent when the user does not accept the consent of the recording.
 ### consultationReconnecting
 Sent when the connection is lost and the plugin tries an automatic recovery.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### consultationReconnected
 Sent after the launch of `consultationReconnecting` event, if the connection is recovered.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### discconectedByError
 Sent after the launch of the `consultationReconnecting` event, if the connection isn´t recovered.
 
 The SDK will automatically ask users if they want to retry the reconnection or want to exit the video consultation.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### userSelectExit
 Sent after the launch of the `discconectedByError` event, if the user decides to exit the video consultation.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### userTryReconnect
 Sent after the launch of the `discconectedByError` event, if the user decides to attempt the reconnection.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 &nbsp;
 
@@ -522,23 +549,23 @@ Sent after the launch of the `discconectedByError` event, if the user decides to
 ### participantConnected
 Sent when a new participant is connected, this participant can be of camera or screen type.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
-    - { String } [type](#participant-type) - The participant type, can be camera or screen
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [ParticipantType](#participant-type) } participantType - The participant type, can be camera or screen
 
 ### participantDisconnected
 Sent when a participant disconnects, it can be of camera or screen type.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
-    - { String } [type](#participant-type) - The participant type, can be camera or screen
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [ParticipantType](#participant-type) } participantType - The participant type, can be camera or screen
 
 ### participantSelected
 Sent when a participant is selected in the list of participants, this participant can be of camera or screen type. The selected participant will go to the main screen of the video consultation.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
-    - { String } [type](#participant-type) - The participant type, can be camera or screen
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [ParticipantType](#participant-type) } participantType - The participant type, can be camera or screen
 
 
 &nbsp;
@@ -548,14 +575,14 @@ Sent when a participant is selected in the list of participants, this participan
 ### messageSent
 Sent when a message is sent in chat.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 ### messageSent
 Sent when a message is received in the chat.
 #### Parameters
-- { eventId: String } event - The event data
-    - { String } [eventId](#event-id) - The event id
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
 
 
 [CLI]: https://docs.npmjs.com/cli/v7/commands/npm-install
