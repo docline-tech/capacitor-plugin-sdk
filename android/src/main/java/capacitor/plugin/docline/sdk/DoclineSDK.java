@@ -44,7 +44,7 @@ public class DoclineSDK extends Plugin {
         JSONObject dictionary = new JSONObject();
         dictionary.put(EVENT_ID,"error");
         dictionary.put(TYPE_ID,"emptyCodeError");
-        notify(call, dictionary);
+        notifyError(call, dictionary);
       } catch (JSONException e) {
         e.printStackTrace();
       }
@@ -56,7 +56,7 @@ public class DoclineSDK extends Plugin {
         JSONObject dictionary = new JSONObject();
         dictionary.put(EVENT_ID,"error");
         dictionary.put(TYPE_ID,"connectionError");
-        notify(call, dictionary);
+        notifyError(call, dictionary);
       } catch (JSONException e) {
         e.printStackTrace();
       }
@@ -64,6 +64,7 @@ public class DoclineSDK extends Plugin {
     }
     intent.putExtra(DoclineActivity.CODE, code);
     intent.putExtra(DoclineActivity.URL, path);
+    intent.putExtra(DoclineActivity.ENABLE_SETTINGS, true);
     getContext().startActivity(intent);
     IntentFilter filter = new IntentFilter();
     filter.addAction(DoclineActivity.GENERAL_LISTENER);
@@ -115,7 +116,7 @@ public class DoclineSDK extends Plugin {
           break;
         case consultationJoinError:
           dictionary.put(TYPE_ID, "unauthorizedError");
-          notify(call, dictionary);
+          notifyError(call, dictionary);
           break;
         case showScreenView:
         case updatedMicrophone:
@@ -227,6 +228,28 @@ public class DoclineSDK extends Plugin {
     }
     try {
       notifyListeners(dictionary.getString(EVENT_ID), ret);
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  private void notifyError(PluginCall call, JSONObject dictionary) {
+    JSObject ret = new JSObject();
+    Iterator<String> it = dictionary.keys();
+    while (it.hasNext()) {
+      String key = it.next();
+      try {
+        ret.put(key, dictionary.getString(key));
+      } catch (JSONException e) {
+        e.printStackTrace();
+        call.resolve();
+      }
+    }
+    try {
+      notifyListeners(dictionary.getString(EVENT_ID), ret);
+      call.resolve();
+      removeAllListeners(call);
     } catch (JSONException e) {
       e.printStackTrace();
     }

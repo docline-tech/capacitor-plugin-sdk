@@ -94,7 +94,7 @@ android {
 You need to add the following repositories to the top app level so dependencies can be resolved.
 
 ```gradle
-maven { url "Docline MAVEN repository url goes here" }
+maven { url "https://nexus.docline.com/repository/maven-public/" }
 maven { url 'https://tokbox.bintray.com/maven' }
 ```
 ### Import capacitor plugin inside BridgeActivity
