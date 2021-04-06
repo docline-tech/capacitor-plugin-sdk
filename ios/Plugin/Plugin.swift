@@ -29,7 +29,7 @@ public class DoclineSDK: CAPPlugin {
             return
         }
         let colorHex = call.getString(Params.color.rawValue) ?? ""
-        let color: UIColor? = UIColor(hex: colorHex)
+        let color: UIColor? = UIColor(hex: colorHex.uppercased())
         let setupData = Docline.Setup(serverURL: serverURL, primaryColor: color, secondaryColor: color)
         let options = Docline.Options(roomCode: roomCode)
         
