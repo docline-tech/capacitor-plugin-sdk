@@ -9,7 +9,7 @@ export class DoclineSDKWeb extends WebPlugin implements DoclineSDKPlugin {
     });
   }
 
-  async join(options: { code: string, path: string }): Promise<void> {
+  async join(options: { code: string, path: string, color: string }): Promise<void> {
     console.log('join', options);
   }
 }

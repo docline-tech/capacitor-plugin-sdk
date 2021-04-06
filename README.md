@@ -151,6 +151,7 @@ This method works async. It allows us to connect to the Docline video consultati
 #### Parameters
 - { String } code - The video consultation code
 - { String } path - The API url
+- { String } color - The corporate color
 
 #### Example usage
 
@@ -159,14 +160,16 @@ This method works async. It allows us to connect to the Docline video consultati
  * Join
  * @param {String} code - The code param is the video consultation code
  * @param {String} path - The path param is the api url
- * 
+ * @param {String} color - The color param is the corporate color
  */	
     let code = "videoConsultationCode";
     let apiURL = "https://api-url";
+    let color = "#0a73ba"
     
     docline.join({
       code: this.code,
-      path: apiURL
+      path: apiURL,
+      color: color
     });
 ```
 If no error occurrs, we will connect to the video consultation. In both cases events will be emitted, if we want to be notified we will have to subscribe to the event.
@@ -186,10 +189,13 @@ onClick() {
     docline.addListener(EventId.consultationJoinSuccess, this.consultationJoinSuccess);
     
     let apiURL = "https://api-url";    
+    let color = "#0a73ba"
+    
     docline.join({
       code: this.code,
-      path: apiURL
-    })
+      path: apiURL,
+      color: color
+    });
 }
 
 consultationJoinSuccess(event: EventData) {
@@ -244,12 +250,13 @@ const docline: DoclineSDKPlugin = DoclineSDK as DoclineSDKPlugin;
 ...
 
 join() {
-    docline.addListener(EventId.error, this.handleError);
+    docline.addListener(EventId.error, this.handleError);    
     
-    DoclineSDK.join({
+    docline.join({
       code: this.code,
-      path: apiURL
-    })    
+      path: apiURL,
+      color: color
+    });   
 }
 
 handleError(error: ErrorData) {
