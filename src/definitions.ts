@@ -7,7 +7,7 @@ declare module '@capacitor/core' {
 }
 
 export interface DoclineSDKPlugin {
-  join(options: { code: string, path: string }): Promise<void>;
+  join(options: { code: string, path: string, color: string }): Promise<void>;
 
   // Error Add Listener
   

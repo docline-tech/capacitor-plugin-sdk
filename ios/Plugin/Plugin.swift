@@ -9,21 +9,28 @@ import DoclineVideoSDK
 @objc(DoclineSDK)
 public class DoclineSDK: CAPPlugin {
     var call: CAPPluginCall?
+
+    enum Params: String {
+        case path
+        case code
+        case color
+    }
     
     @objc func join(_ call: CAPPluginCall) {
         self.call = call
         
-        guard let serverURL = call.getString("path") else {            
+        guard let serverURL = call.getString(Params.path.rawValue) else {
             sendError(.connectionError)
             return
         }
 
-        guard let roomCode = call.getString("code") else {            
+        guard let roomCode = call.getString(Params.code.rawValue) else {
             sendError(.emptyCodeError)
             return
         }
-    
-        let setupData = Docline.Setup (serverURL: serverURL)
+        let colorHex = call.getString(Params.color.rawValue) ?? ""
+        let color: UIColor? = UIColor(hex: colorHex)
+        let setupData = Docline.Setup(serverURL: serverURL, primaryColor: color, secondaryColor: color)
         let options = Docline.Options(roomCode: roomCode)
         
         DispatchQueue.main.async { [weak self] in
@@ -388,5 +395,36 @@ extension DoclineSDK: DoclineChatDelegate {
     enum ChatEventId: String {
         case messageSent,
              messageReceived
+    }
+}
+
+extension UIColor {
+    public convenience init?(hex: String) {
+        if hex.hasPrefix("#") {
+            let start = hex.index(hex.startIndex, offsetBy: 1)
+            var hexColor = String(hex[start...])
+            
+            if hexColor.count == 6 {
+                hexColor = "\(hexColor)FF"
+            }
+            
+            if hexColor.count == 8 {
+                let scanner = Scanner(string: hexColor)
+                var hexNumber: UInt64 = 0
+
+                if scanner.scanHexInt64(&hexNumber) {
+                    let r, g, b, a: CGFloat
+                    r = CGFloat((hexNumber & 0xff000000) >> 24) / 255
+                    g = CGFloat((hexNumber & 0x00ff0000) >> 16) / 255
+                    b = CGFloat((hexNumber & 0x0000ff00) >> 8) / 255
+                    a = CGFloat(hexNumber & 0x000000ff) / 255
+
+                    self.init(red: r, green: g, blue: b, alpha: a)
+                    return
+                }
+            }
+        }
+
+        return nil
     }
 }
