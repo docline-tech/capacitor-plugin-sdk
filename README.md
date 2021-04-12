@@ -124,6 +124,22 @@ public class MainActivity extends BridgeActivity {
 }
 ```
 
+### How to setup brand colors
+
+To setup brand colors in Android you need to create and overwrite colors in your colors.xml project level.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#PRIMARY_COLOR</color>
+    <color name="colorSecondary">#SECONDARY_COLOR</color>
+    <color name="colorPrimaryDark">#STATUSBAR_COLOR</color>
+    <color name="colorAccent">#PRIMARY_COLOR</color>
+</resources>
+```
+
+
+
 # Usage
 
 You need to add this lines to use it.
