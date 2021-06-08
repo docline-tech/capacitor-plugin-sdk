@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target  = '11.0'
   s.dependency 'Capacitor'
   s.swift_version = '5.1'
-  s.dependency 'DoclineVideoSDK', '1.0.7' 
+  s.dependency 'DoclineVideoSDK', '1.0.8' 
 end
