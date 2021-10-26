@@ -1,4 +1,4 @@
-platform :ios, '11.0'
+platform :ios, '12.0'
 
 def capacitor_pods
   # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
@@ -8,10 +8,10 @@ def capacitor_pods
 end
 
 target 'Plugin' do
-  pod 'DoclineVideoSDK', '1.0.7'
+  pod 'DoclineVideoSDK', '1.0.9'
   capacitor_pods
 end
 
 target 'PluginTests' do
-  capacitor_pods    
+  capacitor_pods
 end

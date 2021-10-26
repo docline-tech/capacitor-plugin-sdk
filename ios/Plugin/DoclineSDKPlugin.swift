@@ -6,8 +6,9 @@ import DoclineVideoSDK
  * Please read the Capacitor iOS Plugin Development Guide
  * here: https://capacitorjs.com/docs/plugins/ios
  */
-@objc(DoclineSDK)
-public class DoclineSDK: CAPPlugin {
+@objc(DoclineSDKPlugin)
+public class DoclineSDKPlugin: CAPPlugin {
+    private let implementation = DoclineSDK()
     var call: CAPPluginCall?
 
     enum Params: String {
@@ -45,7 +46,9 @@ public class DoclineSDK: CAPPlugin {
         notifyListeners(ErrorKeys.error.rawValue, data: data)
         
         call?.resolve()
-        removeAllListeners(call)
+        if let call = call {
+            removeAllListeners(call)
+        }
         call = nil        
     }
     
@@ -121,7 +124,7 @@ public class DoclineSDK: CAPPlugin {
     }
 }
 
-extension DoclineSDK: DoclineDelegate {
+extension DoclineSDKPlugin: DoclineDelegate {
     
     public func consultationJoinError(_ error: Docline.ResponseError) {
         sendError(error)
@@ -134,7 +137,7 @@ extension DoclineSDK: DoclineDelegate {
         sender.chatDelegate = self
         
         DispatchQueue.main.async { [weak self] in
-            self?.bridge.viewController.present(sender, animated: true, completion: nil)
+            self?.bridge?.viewController?.present(sender, animated: true, completion: nil)
         }
         
         sendGeneralEvent(.consultationJoinSuccess)
@@ -144,11 +147,13 @@ extension DoclineSDK: DoclineDelegate {
     
     public func consultationTerminated(_ screenView: Docline.ScreenView) {
         DispatchQueue.main.async { [weak self] in
-            self?.bridge.viewController.dismiss(animated: true, completion: nil)
+            self?.bridge?.viewController?.dismiss(animated: true, completion: nil)
         }
         
         sendGeneralEvent(.consultationTerminated)
-        removeAllListeners(call)                
+        if let call = call {
+            removeAllListeners(call)
+        }
     }
     
     public func show(_ screenView: DoclineVideoSDK.Docline.ScreenView) {
@@ -250,7 +255,7 @@ extension DoclineSDK: DoclineDelegate {
     }
 }
 
-extension DoclineSDK: DoclineRecordingDelegate {
+extension DoclineSDKPlugin: DoclineRecordingDelegate {
     
     public func screenRecordingStarted() {
         sendRecordingEvent(.screenRecordingStarted)
@@ -285,7 +290,7 @@ extension DoclineSDK: DoclineRecordingDelegate {
     }
 }
 
-extension DoclineSDK: DoclineConnectionDelegate {
+extension DoclineSDKPlugin: DoclineConnectionDelegate {
     
     public func consultationReconnecting() {
         sendConnectionEvent(.consultationReconnecting)
@@ -325,7 +330,7 @@ extension DoclineSDK: DoclineConnectionDelegate {
     }
 }
 
-extension DoclineSDK: DoclineParticipantDelegate {
+extension DoclineSDKPlugin: DoclineParticipantDelegate {
     
     public func participantConnected(type: DoclineVideoSDK.Docline.StreamType) {
         sendParticipantEvent(.participantConnected, type: type)
@@ -373,7 +378,7 @@ extension DoclineSDK: DoclineParticipantDelegate {
     }
 }
 
-extension DoclineSDK: DoclineChatDelegate {
+extension DoclineSDKPlugin: DoclineChatDelegate {
     
     public func messageSent() {
         sendChatEvent(.messageSent)

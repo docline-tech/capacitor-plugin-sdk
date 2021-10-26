@@ -1,5 +1,13 @@
 import { WebPlugin } from '@capacitor/core';
-import { DoclineSDKPlugin } from './definitions';
+
+import type { DoclineSDKPlugin } from './definitions';
+
+// export class DoclineSDKWeb extends WebPlugin implements DoclineSDKPlugin {
+//   async echo(options: { value: string }): Promise<{ value: string }> {
+//     console.log('ECHO', options);
+//     return options;
+//   }
+// }
 
 export class DoclineSDKWeb extends WebPlugin implements DoclineSDKPlugin {
   constructor() {
@@ -13,10 +21,3 @@ export class DoclineSDKWeb extends WebPlugin implements DoclineSDKPlugin {
     console.log('join', options);
   }
 }
-
-const DoclineSDK = new DoclineSDKWeb();
-
-export { DoclineSDK };
-
-import { registerWebPlugin } from '@capacitor/core';
-registerWebPlugin(DoclineSDK);

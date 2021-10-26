@@ -1,11 +1,5 @@
 import type { PluginListenerHandle } from '@capacitor/core';
 
-declare module '@capacitor/core' {
-  interface PluginRegistry {
-    DoclineSDK: DoclineSDKPlugin;
-  }
-}
-
 export interface DoclineSDKPlugin {
   join(options: { code: string, path: string, color: string }): Promise<void>;
 
