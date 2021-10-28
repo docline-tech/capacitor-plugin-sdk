@@ -1,6 +1,6 @@
 
 # Capacitor Docline SDK plugin
-![](https://drive.google.com/uc?export=view&id=1uPXUx1rg8sYWyRu2Q9UNvW2nwaQEVRMS)
+![](https://drive.google.com/uc?export=view&id=1_VGN5i9_djalUq5SLYMeOCKvZgXteNSI)
 
 This [plugin](https://www.npmjs.com/package/capacitor-plugin-docline-sdk) for Capacitor, allows you to use the Docline SDK.
 
@@ -8,14 +8,14 @@ The Docline SDK makes it easy and simple to integrate Docline video consultation
 
 This app needs access to the camera and microphone to make video consultations.
 
-Also available [for Cordova](https://www.npmjs.com/package/cordova-plugin-docline-sdk).
-
-## Supported Platforms
-- __iOS 11.0 or higher__ 
-- __Android__ (Coming soon)
+## Supported
+- __iOS 12.0 or higher__ 
+- __Android__ (Android 5 or higher)
+- __Capacitor v2__ (plugin version 1.0.4)
+- __Capacitor v3__ (plugin version 1.0.5 or higher)
 
 ## Example projects
-The example projects are [here](https://gitlab.com/dev-docline/exampledoclinesdk).  
+The example projects are [here](https://github.com/docline-tech/sdk-example).  
 
 ## Contents
 - [Installation](#installation)
@@ -135,20 +135,18 @@ To setup brand colors in Android you need to create and overwrite colors in your
 ```
 
 
-
 # Usage
 
 You need to add this lines to use it.
 ```javascript
 import { DoclineSDKPlugin } from 'capacitor-plugin-docline-sdk';
-import { Plugins } from '@capacitor/core';
-const { DoclineSDK } = Plugins;
+import { DoclineSDK } from 'capacitor-plugin-docline-sdk';
 const docline: DoclineSDKPlugin = DoclineSDK as DoclineSDKPlugin;
 ```
 
 You need to add this line to use the interfaces and enums defined in the plugin:
 ```javascript
-import { DoclineSDKPlugin, EventId, ErrorType, ... } from 'capacitor-plugin-docline-sdk';
+import { DoclineSDKPlugin, ErrorData, ErrorType, EventData, EventId } from 'capacitor-plugin-docline-sdk';
 ```
 
 ## Core Module
