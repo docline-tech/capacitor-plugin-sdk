@@ -10,7 +10,7 @@ This app needs access to the camera and microphone to make video consultations.
 
 ## Supported
 - __iOS 12.0 or higher__ 
-- __Android__ (Android 5 or higher)
+- __Android5 or higher__
 - __Capacitor v2__ (plugin version 1.0.4)
 - __Capacitor v3__ (plugin version 1.0.5 or higher)
 
@@ -187,8 +187,7 @@ If no error occurrs, we will connect to the video consultation. In both cases ev
 #### Example usage
 ```javascript
 import { DoclineSDKPlugin, EventData, EventId } from 'capacitor-plugin-docline-sdk';
-import { Plugins } from '@capacitor/core';
-const { DoclineSDK } = Plugins;
+import { DoclineSDK } from 'capacitor-plugin-docline-sdk';
 const docline: DoclineSDKPlugin = DoclineSDK as DoclineSDKPlugin;
 
 ...
@@ -254,8 +253,7 @@ Sets a listener to handle errors.
 #### Example usage
 ```javascript
 import { DoclineSDKPlugin, ErrorData, ErrorType } from 'capacitor-plugin-docline-sdk';
-import { Plugins } from '@capacitor/core';
-const { DoclineSDK } = Plugins;
+import { DoclineSDK } from 'capacitor-plugin-docline-sdk';
 const docline: DoclineSDKPlugin = DoclineSDK as DoclineSDKPlugin;
 ...
 
@@ -413,8 +411,7 @@ Sets a listener for the indicated event.
 #### Example usage
 ```javascript
 import { DoclineSDKPlugin, EventData, EventId } from 'capacitor-plugin-docline-sdk';
-import { Plugins } from '@capacitor/core';
-const { DoclineSDK } = Plugins;
+import { DoclineSDK } from 'capacitor-plugin-docline-sdk';
 const docline: DoclineSDKPlugin = DoclineSDK as DoclineSDKPlugin;
 
 ...
