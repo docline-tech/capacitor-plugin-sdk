@@ -23,6 +23,7 @@ import docline.doclinevideosdk.core.listeners.ConnectionListener;
 import docline.doclinevideosdk.core.listeners.DoclineListener;
 import docline.doclinevideosdk.core.listeners.enums.CameraSource;
 import docline.doclinevideosdk.core.listeners.enums.ScreenView;
+import docline.doclinevideosdk.core.listeners.enums.UserType;
 import docline.doclinevideosdk.views.DoclineActivity;
 
 @CapacitorPlugin(name = "DoclineSDK")
@@ -31,6 +32,7 @@ public class DoclineSDKPlugin extends Plugin {
     final String EVENT_ID = "eventId";
     final String TYPE_ID = "type";
     final String SCREEN_ID = "screenId";
+    final String USER_TYPE = "USER_TYPE";
 
     @PluginMethod
     public void join(final PluginCall call) {
@@ -130,6 +132,14 @@ public class DoclineSDKPlugin extends Plugin {
                     dictionary.put(TYPE_ID, "unauthorizedError");
                     notifyError(call, dictionary);
                     break;
+
+                case consultationExit:
+                case consultationRejoin:
+                    UserType userType = (UserType) bundle.getSerializable(DoclineActivity.USER_TYPE);
+                    dictionary.put(USER_TYPE, userType.toString());
+                    notify(call, dictionary);
+                    break;
+
                 case showScreenView:
                 case updatedMicrophone:
                     screenName = (ScreenView) bundle.getSerializable(DoclineActivity.SCREEN);
