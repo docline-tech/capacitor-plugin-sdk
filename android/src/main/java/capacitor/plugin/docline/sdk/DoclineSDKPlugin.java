@@ -27,20 +27,21 @@ import docline.doclinevideosdk.views.DoclineActivity;
 
 @CapacitorPlugin(name = "DoclineSDK")
 public class DoclineSDKPlugin extends Plugin {
-    
-    private DoclineSDK implementation = new DoclineSDK();
-    
+
     final String EVENT_ID = "eventId";
     final String TYPE_ID = "type";
     final String SCREEN_ID = "screenId";
-    
+
     @PluginMethod
     public void join(final PluginCall call) {
-        Intent intent = new Intent(getActivity(), DoclineActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // get code and path
         JSObject data = call.getData();
-        String code = data.getString("code", "");
-        if (code.isEmpty()) {
+        String code = data.getString("code");
+        String path = data.getString("path");
+
+        // check if code is valid
+        if (code == null || code.isEmpty()) {
             try {
                 JSONObject dictionary = new JSONObject();
                 dictionary.put(EVENT_ID,"error");
@@ -51,8 +52,9 @@ public class DoclineSDKPlugin extends Plugin {
             }
             return;
         }
-        String path = data.getString("path");
-        if (path.isEmpty()) {
+
+        // check if path is valid
+        if (path == null || path.isEmpty()) {
             try {
                 JSONObject dictionary = new JSONObject();
                 dictionary.put(EVENT_ID,"error");
@@ -63,10 +65,8 @@ public class DoclineSDKPlugin extends Plugin {
             }
             return;
         }
-        intent.putExtra(DoclineActivity.CODE, code);
-        intent.putExtra(DoclineActivity.URL, path);
-        intent.putExtra(DoclineActivity.ENABLE_SETTINGS, true);
-        getContext().startActivity(intent);
+
+        // create broadcast listeners
         IntentFilter filter = new IntentFilter();
         filter.addAction(DoclineActivity.GENERAL_LISTENER);
         filter.addAction(DoclineActivity.CONNECTION_LISTENER);
@@ -94,10 +94,18 @@ public class DoclineSDKPlugin extends Plugin {
             }
         };
         getContext().registerReceiver(receiver, filter);
+
+        // start DoclineActivity
+        Intent intent = new Intent(getActivity(), DoclineActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(DoclineActivity.CODE, code);
+        intent.putExtra(DoclineActivity.URL, path);
+        intent.putExtra(DoclineActivity.ENABLE_SETTINGS, true);
+        getContext().startActivity(intent);
+
         call.success();
     }
-    
-    
+
     private void manageGeneralListener(PluginCall call, Intent intent) {
         Bundle extras = intent.getExtras();
         DoclineListener.MethodName method = (DoclineListener.MethodName) extras.getSerializable(DoclineActivity.METHOD);
@@ -109,13 +117,16 @@ public class DoclineSDKPlugin extends Plugin {
             switch (method) {
                 case consultationJoinSuccess:
                     notify(call, dictionary);
+                    call.resolve();
                     break;
                 case consultationTerminated:
                     screenName = (ScreenView) bundle.getSerializable(DoclineActivity.SCREEN);
                     dictionary.put(SCREEN_ID, screenName);
                     notify(call, dictionary);
+                    removeAllListeners(call);
                     break;
                 case consultationJoinError:
+                    dictionary.put(EVENT_ID,"error");
                     dictionary.put(TYPE_ID, "unauthorizedError");
                     notifyError(call, dictionary);
                     break;
@@ -144,8 +155,7 @@ public class DoclineSDKPlugin extends Plugin {
             call.resolve();
         }
     }
-    
-    
+
     private void manageConnectionListener(PluginCall call, Intent intent) {
         Bundle extras = intent.getExtras();
         ConnectionListener.MethodName method = (ConnectionListener.MethodName) extras.getSerializable(DoclineActivity.METHOD);
@@ -170,9 +180,9 @@ public class DoclineSDKPlugin extends Plugin {
         } catch (JSONException e) {
             call.resolve();
         }
-        
+
     }
-    
+
     private void manageArchiveListener(PluginCall call, Intent intent) {
         Bundle extras = intent.getExtras();
         ArchiveListener.MethodName method = (ArchiveListener.MethodName) extras.getSerializable(DoclineActivity.METHOD);
@@ -194,7 +204,7 @@ public class DoclineSDKPlugin extends Plugin {
             call.resolve();
         }
     }
-    
+
     private void manageChatListener(PluginCall call, Intent intent) {
         Bundle extras = intent.getExtras();
         ChatListener.MethodName method = (ChatListener.MethodName) extras.getSerializable(DoclineActivity.METHOD);
@@ -213,8 +223,8 @@ public class DoclineSDKPlugin extends Plugin {
             call.resolve();
         }
     }
-    
-    
+
+
     private void notify(PluginCall call, JSONObject dictionary) {
         JSObject ret = new JSObject();
         Iterator<String> it = dictionary.keys();
@@ -233,11 +243,11 @@ public class DoclineSDKPlugin extends Plugin {
             e.printStackTrace();
         }
     }
-    
-    
+
     private void notifyError(PluginCall call, JSONObject dictionary) {
         JSObject ret = new JSObject();
         Iterator<String> it = dictionary.keys();
+
         while (it.hasNext()) {
             String key = it.next();
             try {
