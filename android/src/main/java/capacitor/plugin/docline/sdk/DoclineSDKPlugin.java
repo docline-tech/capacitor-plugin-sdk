@@ -32,7 +32,7 @@ public class DoclineSDKPlugin extends Plugin {
     final String EVENT_ID = "eventId";
     final String TYPE_ID = "type";
     final String SCREEN_ID = "screenId";
-    final String USER_TYPE = "USER_TYPE";
+    final String USER_TYPE = "userType";
 
     @PluginMethod
     public void join(final PluginCall call) {
