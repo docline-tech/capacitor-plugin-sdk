@@ -8,7 +8,7 @@ def capacitor_pods
 end
 
 target 'Plugin' do
-  pod 'DoclineVideoSDK', '1.0.9'
+  pod 'DoclineVideoSDK', '1.1.0'
   capacitor_pods
 end
 

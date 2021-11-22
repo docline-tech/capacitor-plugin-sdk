@@ -36,6 +36,9 @@ export interface EventData {
   isEnabled?: boolean;
   // The participant type, can be camera or screen
   participantType?: ParticipantType;
+  // The user type, can be patient or professional
+  userType?: UserType;
+  
 }
 
 export enum ErrorType { 
@@ -57,6 +60,8 @@ export enum EventId {
   updatedCameraStatus = "updatedCameraStatus",
   updatedMicrophone = "updatedMicrophone",		
   consultationJoined = "consultationJoined",
+  consultationRejoin = "consultationRejoin",
+  consultationExit = "consultationExit",
   // Recording Events
   screenRecordingStarted = "screenRecordingStarted", 
   screenRecordingFinished = "screenRecordingFinished", 
@@ -92,4 +97,9 @@ export enum CameraSource {
 export enum ParticipantType { 
   camera = "camera", 
   screen = "screen"
+}
+
+export enum UserType { 
+  patient = "patient", 
+  professional = "professional"
 }

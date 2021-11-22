@@ -325,6 +325,8 @@ enum EventId {
   updatedCameraStatus = "updatedCameraStatus",
   updatedMicrophone = "updatedMicrophone",		
   consultationJoined = "consultationJoined",
+  consultationRejoin = "consultationRejoin",
+  consultationExit = "consultationExit",
   // Recording Events
   screenRecordingStarted = "screenRecordingStarted", 
   screenRecordingFinished = "screenRecordingFinished", 
@@ -399,6 +401,17 @@ enum CameraSource {
 enum ParticipantType { 
   camera = "camera", 
   screen = "screen"
+}
+```
+#### User Type
+##### Definition
+```javascript
+/**
+ * User Type
+ */
+enum UserType { 
+  patient = "patient", 
+  professional = "professional"
 }
 ```
 
@@ -496,6 +509,21 @@ Sent when the status of the microphone is modified (enabled or disabled) and ind
     - { [EventId](#event-id) } eventId - The event id
     - { [ScreenId](#screen-id) } screenId - The screen id where the event occurred
     - { Boolean } isEnabled - Indicates whether the microphone has been enabled or disabled
+
+### consultationRejoin
+Sent when the user decides to rejoin the video consultation from finish screen.
+#### Parameters
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [UserType](#user-type) } userType - The user type
+
+### consultationExit
+Sent when the user decides to exit the video consultation from finish screen.
+#### Parameters
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [UserType](#user-type) } userType - The user type
+
 
 &nbsp;
 
