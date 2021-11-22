@@ -142,8 +142,7 @@ extension DoclineSDKPlugin: DoclineDelegate {
         }
         
         sendGeneralEvent(.consultationJoinSuccess)
-        call?.resolve()        
-        call = nil
+        call?.resolve()
     }
     
     public func consultationTerminated(_ screenView: Docline.ScreenView) {
@@ -152,9 +151,11 @@ extension DoclineSDKPlugin: DoclineDelegate {
         }
         
         sendGeneralEvent(.consultationTerminated)
+        
         if let call = call {
-            removeAllListeners(call)
+            removeAllListeners(call)            
         }
+        call = nil
     }
     
     public func show(_ screenView: DoclineVideoSDK.Docline.ScreenView) {
