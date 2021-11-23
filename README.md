@@ -12,7 +12,7 @@ This app needs access to the camera and microphone to make video consultations.
 - __iOS 12.0 or higher__ 
 - __Android5 or higher__
 - __Capacitor v2__ (plugin version 1.0.4)
-- __Capacitor v3__ (plugin version 1.0.5 or higher)
+- __Capacitor v3__ (plugin version 1.0.8 or higher)
 
 ## Example projects
 The example projects are [here](https://github.com/docline-tech/sdk-example).  
