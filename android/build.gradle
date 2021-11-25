@@ -61,7 +61,7 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     // External dependencies
-    implementation 'io.docline:video-consultation:1.0.0'
+    implementation 'io.docline:video-consultation:1.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation('com.squareup.okhttp3:logging-interceptor:4.3.1') { transitive = true }
     implementation('com.squareup.retrofit2:converter-gson:2.9.0') { transitive = true }

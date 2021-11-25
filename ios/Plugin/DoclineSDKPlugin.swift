@@ -121,6 +121,7 @@ public class DoclineSDKPlugin: CAPPlugin {
         case cameraSource
         case isEnabled
         case participantType
+        case userType
     }
 }
 
@@ -141,8 +142,7 @@ extension DoclineSDKPlugin: DoclineDelegate {
         }
         
         sendGeneralEvent(.consultationJoinSuccess)
-        call?.resolve()        
-        call = nil
+        call?.resolve()
     }
     
     public func consultationTerminated(_ screenView: Docline.ScreenView) {
@@ -151,9 +151,11 @@ extension DoclineSDKPlugin: DoclineDelegate {
         }
         
         sendGeneralEvent(.consultationTerminated)
+        
         if let call = call {
-            removeAllListeners(call)
+            removeAllListeners(call)            
         }
+        call = nil
     }
     
     public func show(_ screenView: DoclineVideoSDK.Docline.ScreenView) {
@@ -196,6 +198,22 @@ extension DoclineSDKPlugin: DoclineDelegate {
         sendGeneralEvent(.updatedMicrophone, params: dictionary)
     }
     
+    public func consultationRejoin(_ userType: Docline.UserType) {
+        var dictionary: [EventKeys: Any] = [:]
+        let userTypeValue = UserType(userType: userType)
+        dictionary[.userType] = userTypeValue.rawValue
+        
+        sendGeneralEvent(.consultationRejoin, params: dictionary)
+    }
+    
+    public func consultationExit(_ userType: Docline.UserType) {
+        var dictionary: [EventKeys: Any] = [:]
+        let userTypeValue = UserType(userType: userType)
+        dictionary[.userType] = userTypeValue.rawValue
+        
+        sendGeneralEvent(.consultationExit, params: dictionary)
+    }
+    
     // MARK: Private Logic
     
     private func sendGeneralEvent(_ event: GeneralEventId,
@@ -214,7 +232,9 @@ extension DoclineSDKPlugin: DoclineDelegate {
              updatedCameraSource,
              updatedCameraStatus,
              updatedMicrophone,
-             consultationJoined
+             consultationJoined,
+             consultationRejoin,
+             consultationExit
     }
     
     enum ScreenId: String {
@@ -250,6 +270,21 @@ extension DoclineSDKPlugin: DoclineDelegate {
                 self = .back
             @unknown default:
                 self = .front
+            }
+        }
+    }
+    
+    enum UserType: String {
+        case patient, professional
+        
+        init(userType: DoclineVideoSDK.Docline.UserType) {
+            switch userType {
+            case .patient:
+                self = .patient
+            case .professional:
+                self = .professional
+            @unknown default:
+                self = .patient
             }
         }
     }

@@ -12,7 +12,7 @@ This app needs access to the camera and microphone to make video consultations.
 - __iOS 12.0 or higher__ 
 - __Android5 or higher__
 - __Capacitor v2__ (plugin version 1.0.4)
-- __Capacitor v3__ (plugin version 1.0.5 or higher)
+- __Capacitor v3__ (plugin version 1.0.8 or higher)
 
 ## Example projects
 The example projects are [here](https://github.com/docline-tech/sdk-example).  
@@ -325,6 +325,8 @@ enum EventId {
   updatedCameraStatus = "updatedCameraStatus",
   updatedMicrophone = "updatedMicrophone",		
   consultationJoined = "consultationJoined",
+  consultationRejoin = "consultationRejoin",
+  consultationExit = "consultationExit",
   // Recording Events
   screenRecordingStarted = "screenRecordingStarted", 
   screenRecordingFinished = "screenRecordingFinished", 
@@ -399,6 +401,17 @@ enum CameraSource {
 enum ParticipantType { 
   camera = "camera", 
   screen = "screen"
+}
+```
+#### User Type
+##### Definition
+```javascript
+/**
+ * User Type
+ */
+enum UserType { 
+  patient = "patient", 
+  professional = "professional"
 }
 ```
 
@@ -496,6 +509,21 @@ Sent when the status of the microphone is modified (enabled or disabled) and ind
     - { [EventId](#event-id) } eventId - The event id
     - { [ScreenId](#screen-id) } screenId - The screen id where the event occurred
     - { Boolean } isEnabled - Indicates whether the microphone has been enabled or disabled
+
+### consultationRejoin
+Sent when the user decides to rejoin the video consultation from finish screen.
+#### Parameters
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [UserType](#user-type) } userType - The user type
+
+### consultationExit
+Sent when the user decides to exit the video consultation from finish screen.
+#### Parameters
+- { [EventData](#event-data) } event - The event data
+    - { [EventId](#event-id) } eventId - The event id
+    - { [UserType](#user-type) } userType - The user type
+
 
 &nbsp;
 
