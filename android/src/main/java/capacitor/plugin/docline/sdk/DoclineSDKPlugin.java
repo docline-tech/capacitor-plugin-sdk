@@ -25,7 +25,6 @@ import docline.doclinevideosdk.core.listeners.ArchiveListener;
 import docline.doclinevideosdk.core.listeners.ChatListener;
 import docline.doclinevideosdk.core.listeners.ConnectionListener;
 import docline.doclinevideosdk.core.listeners.DoclineListener;
-import docline.doclinevideosdk.core.listeners.LifecycleListener;
 import docline.doclinevideosdk.core.listeners.enums.CameraSource;
 import docline.doclinevideosdk.core.listeners.enums.ScreenView;
 import docline.doclinevideosdk.core.listeners.enums.UserType;
@@ -79,7 +78,6 @@ public class DoclineSDKPlugin extends Plugin {
 
         // create broadcast listeners
         IntentFilter filter = new IntentFilter();
-        filter.addAction(DoclineActivity.LIFECYCLE_LISTENER);
         filter.addAction(DoclineActivity.GENERAL_LISTENER);
         filter.addAction(DoclineActivity.CONNECTION_LISTENER);
         filter.addAction(DoclineActivity.ARCHIVE_LISTENER);
@@ -88,9 +86,6 @@ public class DoclineSDKPlugin extends Plugin {
             @Override
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
-                    case DoclineActivity.LIFECYCLE_LISTENER:
-                        manageLifecycleListener(intent);
-                        break;
                     case DoclineActivity.GENERAL_LISTENER:
                         manageGeneralListener(intent);
                         break;
@@ -117,31 +112,8 @@ public class DoclineSDKPlugin extends Plugin {
         intent.putExtra(DoclineActivity.URL, path);
         intent.putExtra(DoclineActivity.ENABLE_SETTINGS, true);
         getContext().startActivity(intent);
-
-        resolve(false);
     }
 
-    private void manageLifecycleListener(Intent intent) {
-        Bundle extras = intent.getExtras();
-        LifecycleListener.Method method = (LifecycleListener.Method) extras.getSerializable(DoclineActivity.METHOD);
-        JSONObject dictionary = new JSONObject();
-        try {
-            dictionary.put(EVENT_ID, method.toString());
-            switch (method) {
-                case OnActivityDestroyed:
-                    notify(dictionary);
-                    resolve(true);
-                    break;
-                case OnActivityCreated:
-                    notify(dictionary);
-                    break;
-                default:
-                    break;
-            }
-        } catch (JSONException e) {
-            resolve(false);
-        }
-    }
 
     private void manageGeneralListener(Intent intent) {
         Bundle extras = intent.getExtras();
@@ -152,19 +124,23 @@ public class DoclineSDKPlugin extends Plugin {
         try {
             dictionary.put(EVENT_ID, method.toString());
             switch (method) {
+                case consultationJoinError:
+                    dictionary.put(EVENT_ID,"error");
+                    dictionary.put(TYPE_ID, "unauthorizedError");
+                    notifyError(dictionary);
+                    break;
+                case consultationJoined:
+                    notify(dictionary);
+                    break;
                 case consultationJoinSuccess:
                     notify(dictionary);
+                    resolve();
                     break;
                 case consultationTerminated:
                     screenName = (ScreenView) bundle.getSerializable(DoclineActivity.SCREEN);
                     dictionary.put(SCREEN_ID, screenName);
                     notify(dictionary);
-                    resolve(true);
-                    break;
-                case consultationJoinError:
-                    dictionary.put(EVENT_ID,"error");
-                    dictionary.put(TYPE_ID, "unauthorizedError");
-                    notifyError(dictionary);
+                    finishPlugin();
                     break;
 
                 case consultationExit:
@@ -196,7 +172,22 @@ public class DoclineSDKPlugin extends Plugin {
                     break;
             }
         } catch (JSONException e) {
-            resolve(false);
+            e.printStackTrace();
+            /*
+             * resolve call or finish plugin when fail event consultationJoinError
+             */
+            switch (method) {
+                case consultationJoinError:
+                    resolve();
+                    finishPlugin();
+                    break;
+                case consultationTerminated:
+                    finishPlugin();
+                    break;
+                case consultationJoinSuccess:
+                    resolve();
+                    break;
+            }
         }
     }
 
@@ -222,7 +213,7 @@ public class DoclineSDKPlugin extends Plugin {
                     break;
             }
         } catch (JSONException e) {
-            resolve(false);
+            e.printStackTrace();
         }
 
     }
@@ -245,7 +236,7 @@ public class DoclineSDKPlugin extends Plugin {
                     break;
             }
         } catch (JSONException e) {
-            resolve(false);
+            e.printStackTrace();
         }
     }
 
@@ -264,7 +255,7 @@ public class DoclineSDKPlugin extends Plugin {
                     break;
             }
         } catch (JSONException e) {
-            resolve(false);
+            e.printStackTrace();
         }
     }
 
@@ -278,51 +269,53 @@ public class DoclineSDKPlugin extends Plugin {
                 ret.put(key, dictionary.getString(key));
             } catch (JSONException e) {
                 e.printStackTrace();
-                resolve(false);
             }
         }
+
         try {
             notifyListeners(dictionary.getString(EVENT_ID), ret);
         } catch (JSONException e) {
             e.printStackTrace();
-            resolve(false);
         }
     }
 
     private void notifyError(JSONObject dictionary) {
-        JSObject ret = new JSObject();
+        JSObject jsonObject = new JSObject();
         Iterator<String> it = dictionary.keys();
 
         while (it.hasNext()) {
             String key = it.next();
             try {
-                ret.put(key, dictionary.getString(key));
+                jsonObject.put(key, dictionary.getString(key));
             } catch (JSONException e) {
                 e.printStackTrace();
-                resolve(false);
             }
         }
 
         try {
-            notifyListeners(dictionary.getString(EVENT_ID), ret);
-            resolve(true);
+            notifyListeners(dictionary.getString(EVENT_ID), jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
-            resolve(true);
+        }
+        resolve();
+        finishPlugin();
+    }
+
+    private void resolve() {
+        if (pluginCall != null) {
+            pluginCall.resolve();
         }
     }
 
-    private void resolve(Boolean finishPlugin) {
-        if (pluginCall != null) {
-            pluginCall.resolve();
-            if (finishPlugin) {
-
-                if (broadcastReceiver != null) {
-                    getContext().unregisterReceiver(broadcastReceiver);
-                }
-                removeAllListeners(pluginCall);
-                pluginCall = null;
+    private void finishPlugin() {
+        try {
+            if (broadcastReceiver != null) {
+                getContext().unregisterReceiver(broadcastReceiver);
             }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
+        removeAllListeners(pluginCall);
+        pluginCall = null;
     }
 }
