@@ -110,7 +110,7 @@ public class DoclineSDKPlugin extends Plugin {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(DoclineActivity.CODE, code);
         intent.putExtra(DoclineActivity.URL, path);
-        intent.putExtra(DoclineActivity.ENABLE_SETTINGS, true);
+        intent.putExtra(DoclineActivity.ENABLE_SETTINGS, false);
         getContext().startActivity(intent);
     }
 
