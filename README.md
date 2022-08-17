@@ -78,14 +78,11 @@ By default its android.app module gradle file.
 
 ```gradle
 android {
+    ...
+    buildFeatures {
+        dataBinding true
+    }
 
-  ...
-  
-  dataBinding {
-    enabled = true
-  }
-
-  ...
 }
 ```
 
@@ -94,8 +91,16 @@ android {
 You need to add the following repositories to the top app level so dependencies can be resolved.
 
 ```gradle
-maven { url "https://nexus.docline.com/repository/maven-public/" }
-maven { url 'https://tokbox.bintray.com/maven' }
+...
+allprojects {
+
+    repositories {
+        ...
+        maven { url "https://nexus.docline.com/repository/maven-public/" }
+        maven { url 'https://tokbox.bintray.com/maven' }
+    }
+}
+...
 ```
 ### Import capacitor plugin inside BridgeActivity
 
