@@ -26,6 +26,11 @@ The example projects are [here](https://github.com/docline-tech/sdk-example).
 - [Event Module](#event-module)
 
 # Installation
+cristian@MacBook-Pro-16 ~ % node --version
+v16.16.0
+cristian@MacBook-Pro-16 ~ % npm --version
+8.11.0
+
 The plugin can be installed via [NPM-CLI][CLI] and is publicly available on [NPM][npm].
 
 Execute from the project's root folder:
